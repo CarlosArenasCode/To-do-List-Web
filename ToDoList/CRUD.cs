@@ -43,25 +43,31 @@ namespace ToDoList
         // Método para ELIMINAR una tarea de la base de datos
         public void EliminarTarea(int id)
         {
-            // Lammamos al metodo conexion()
+            // Obtiene la conexión a la base de datos MySQL.
             MySqlConnection conexionBD = Conexion.conexion();
 
-            try // Manejo de errores con try-catch
+            // Inicia un bloque 'try' para capturar posibles errores.
+            try
             {
-                // Establecemo la conexión a la base de datos con el método Open()
+                // Abre la conexión con la base de datos.
                 conexionBD.Open();
 
-                // Crear el comando SQL para eliminar
+                // Prepara la consulta SQL para borrar usando el ID.
                 string query = "DELETE FROM tareas WHERE id = " + id;
 
-                // Crear el objeto comando con la consulta(query) y la conexión(conexionBD) para la conexión abierta a la base de datos
+                // Crea el comando SQL (la consulta + la conexión).
                 MySqlCommand comando = new MySqlCommand(query, conexionBD);
+
+                // Ejecuta el comando (DELETE), que no devuelve datos.
                 comando.ExecuteNonQuery();
-                
-                conexionBD.Close(); // Cerrar la conexión
+
+                // Cierra la conexión.
+                conexionBD.Close();
             }
-            catch (Exception ex) // Si hay error
+            // Captura cualquier excepción que ocurra durante el proceso.
+            catch (Exception ex)
             {
+                // Muestra el error en la consola para depuración.
                 Console.WriteLine("Error al eliminar: " + ex.Message);
             }
         }
@@ -93,35 +99,40 @@ namespace ToDoList
 
 
         // Método para CONSULTAR todas las tareas
-        // Creamos el método que retorna un MySqlDataReader que contiene los datos obtenidos de la consulta
         public MySqlDataReader ConsultarTareas()
         {
-            // Llamamos al metodo conexion() para obtener la conexión a la base de datos
+            // Llamamos al método estático para obtener el objeto de conexión a MySQL
             MySqlConnection conexionBD = Conexion.conexion();
             
+            // Usamos try-catch para manejar errores de BD sin que el programa se cierre
             try
             {
-                conexionBD.Open(); // Abrir la conexión
+                // Abrimos la conexión física con el servidor MySQL para poder ejecutar comandos
+                conexionBD.Open();
                 
-                // Crear el comando SQL para consultar
+                // Construimos la consulta SELECT para obtener todos los registros de la tabla
                 string query = "SELECT * FROM tareas";
 
-                // Crear el objeto comando con la consulta(query) y la conexión(conexionBD), para la conexión abierta a la base de datos
+                // Creamos el objeto comando vinculando la query con la conexión activa
                 MySqlCommand comando = new MySqlCommand(query, conexionBD);
 
-                // Envia la consulta para que MySQL lo ejecute
-                // Retorna un objeto MySqlDataReader que contiene los datos obtenidos de la consulta
-                // Los datos se mantienen en el servidor y se leen bajo demanda, bajo demanda se refiere a que los datos se leen uno por uno cuando se solicitan
-                MySqlDataReader leer = comando.ExecuteReader(); // Ejecutar la consulta
+                // Ejecutamos ExecuteReader porque esperamos múltiples filas de datos
+                // Retorna un DataReader que lee los datos fila por fila bajo demanda
+                MySqlDataReader leer = comando.ExecuteReader();
                 
-                return leer; // Retornar los datos
+                // Devolvemos el DataReader para que Form1 pueda iterar sobre los resultados
+                return leer;
 
-                // La conexion no se cierra aqui porque el MySqlDataReader necesita que la conexion este abierta para leer los datos
-                // DataReader necesita la conexion abierta mientras se leen los datos
+                // NO cerramos la conexión aquí porque el DataReader la necesita abierta
+                // Quien reciba el DataReader debe cerrar la conexión después de leer
             }
-            catch (Exception ex) // Si hay error
+            // Si ocurre algún error (conexión, sintaxis SQL, etc.) lo capturamos aquí
+            catch (Exception ex)
             {
+                // Mostramos el error en consola para debugging sin detener el programa
                 Console.WriteLine("Error al consultar: " + ex.Message);
+                
+                // Retornamos null para que Form1 sepa que hubo un error
                 return null;
             }
         }
@@ -130,24 +141,36 @@ namespace ToDoList
         // Método para CONSULTAR tareas completadas
         public MySqlDataReader ConsultarTareasCompletas()
         {
-            // Llamamos al metodo conexion()
+            // Llamamos al método estático para obtener el objeto de conexión a MySQL
             MySqlConnection conexionBD = Conexion.conexion();
             
+            // Usamos try-catch para manejar errores de BD sin que el programa se cierre
             try
             {
-                conexionBD.Open(); // Abrir la conexión
+                // Abrimos la conexión física con el servidor MySQL para poder ejecutar comandos
+                conexionBD.Open();
                 
-                // Crear el comando SQL para consultar solo las completadas
+                // Construimos SELECT con WHERE para filtrar solo registros con completada = 1
                 string query = "SELECT * FROM tareas WHERE completada = 1";
                 
-                MySqlCommand comando = new MySqlCommand(query, conexionBD); // Crear el objeto comando
-                MySqlDataReader leer = comando.ExecuteReader(); // Ejecutar la consulta
+                // Creamos el objeto comando vinculando la query con la conexión activa
+                MySqlCommand comando = new MySqlCommand(query, conexionBD);
                 
-                return leer; // Retornar los datos
+                // Ejecutamos ExecuteReader porque esperamos múltiples filas filtradas
+                MySqlDataReader leer = comando.ExecuteReader();
+                
+                // Devolvemos el DataReader para que Form1 pueda iterar sobre los resultados
+                return leer;
+                
+                // NO cerramos la conexión aquí porque el DataReader la necesita abierta
             }
+            // Si ocurre algún error lo capturamos sin detener el programa
             catch (Exception ex)
             {
+                // Mostramos el error en consola para debugging
                 Console.WriteLine("Error al consultar completas: " + ex.Message);
+                
+                // Retornamos null para indicar que la consulta falló
                 return null;
             }
         }
@@ -156,23 +179,36 @@ namespace ToDoList
         // Método para CONSULTAR tareas pendientes
         public MySqlDataReader ConsultarTareasPendientes()
         {
-            MySqlConnection conexionBD = Conexion.conexion(); // Llamamos al metodo conexion()
+            // Llamamos al método estático para obtener el objeto de conexión a MySQL
+            MySqlConnection conexionBD = Conexion.conexion();
 
+            // Usamos try-catch para manejar errores de BD sin que el programa se cierre
             try
             {
-                conexionBD.Open(); // Abrir la conexión
+                // Abrimos la conexión física con el servidor MySQL para poder ejecutar comandos
+                conexionBD.Open();
                 
-                // Crear el comando SQL para consultar solo las pendientes
+                // Construimos SELECT con WHERE para filtrar solo registros con completada = 0
                 string query = "SELECT * FROM tareas WHERE completada = 0";
                 
-                MySqlCommand comando = new MySqlCommand(query, conexionBD); // Crear el objeto comando
-                MySqlDataReader leer = comando.ExecuteReader(); // Ejecutar la consulta
+                // Creamos el objeto comando vinculando la query con la conexión activa
+                MySqlCommand comando = new MySqlCommand(query, conexionBD);
                 
-                return leer; // Retornar los datos
+                // Ejecutamos ExecuteReader porque esperamos múltiples filas filtradas
+                MySqlDataReader leer = comando.ExecuteReader();
+                
+                // Devolvemos el DataReader para que Form1 pueda iterar sobre los resultados
+                return leer;
+                
+                // NO cerramos la conexión aquí porque el DataReader la necesita abierta
             }
+            // Si ocurre algún error lo capturamos sin detener el programa
             catch (Exception ex)
             {
+                // Mostramos el error en consola para debugging
                 Console.WriteLine("Error al consultar pendientes: " + ex.Message);
+                
+                // Retornamos null para indicar que la consulta falló
                 return null;
             }
         }

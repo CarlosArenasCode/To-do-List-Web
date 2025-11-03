@@ -81,24 +81,30 @@ namespace ToDoList
         // Método para eliminar tarea (Baja)
         private void btnEliminar_Click(object sender, EventArgs e)
         {
-            if (idTareaSeleccionada == 0) // Hacemos la verificación si no se ha seleccionado ninguna tarea
+            // Revisa si hay una tarea seleccionada.
+            if (idTareaSeleccionada == 0)
             {
-                // Mostrar mensaje de error
+                // Si no, muestra un error
                 MessageBox.Show("Por favor seleccione una tarea para eliminar.", "Error");
-                return; // Salir del método si no hay tarea seleccionada
+
+                // y sale del método.
+                return;
             }
 
-            // Llamar al método EliminarTarea del CRUD
+            // Llama al método que borra la tarea de la base de datos.
             crud.EliminarTarea(idTareaSeleccionada);
 
-            // Limpiar campos
+            // Limpia los campos de texto.
             LimpiarCampos();
 
-            // Actualizar lista, para que se refleje el cambio en la interfaz
+            // Actualiza la lista de tareas en pantalla.
             MostrarTodasLasTareas();
+
+            // Quita la selección de la lista.
             lstTareas.ClearSelected();
 
-            MessageBox.Show("Tarea eliminada correctamente.", "Éxito"); // Mostrar mensaje de éxito
+            // Muestra un mensaje de éxito.
+            MessageBox.Show("Tarea eliminada correctamente.", "Éxito");
         }
 
 
@@ -133,65 +139,7 @@ namespace ToDoList
             MessageBox.Show("Tarea modificada correctamente.", "Éxito"); // Mostrar mensaje de éxito
         }
 
-
-        // Consulta 1: Mostrar tareas completas
-        private void btnMostrarCompletas_Click(object sender, EventArgs e)
-        {
-            lstTareas.Items.Clear(); // Limpiar la lista
-            listaIDs.Clear(); // Limpiar la lista de IDs
-
-            // Llamar al método ConsultarTareasCompletas del CRUD
-            MySqlDataReader leer = crud.ConsultarTareasCompletas();
-
-            if (leer != null) // Verificar que el lector no sea nulo
-            {
-                // Leer cada tarea de la base de datos, para cada fila en el resultado de la consulta,
-                while (leer.Read())
-                {
-                    int id = leer.GetInt32(0); // Obtener el ID de la tarea
-                    string nombre = leer.GetString(1); // Obtener el nombre de la tarea
-                    string descripcion = leer.GetString(2); // Obtener la descripción de la tarea
-
-                    listaIDs.Add(id); // Guardar el ID internamente para referencia futura
-                    lstTareas.Items.Add("HECHA - " + nombre + " - " + descripcion); // Agregar la tarea al ListBox
-                }
-                leer.Close(); // Cerrar el lector después de usarlo
-            }
-
-            lstTareas.ClearSelected(); // Limpiar la selección del ListBox
-        }
-
-
-        // Consulta 2: Mostrar tareas pendientes
-        private void btnMostrarPendientes_Click(object sender, EventArgs e)
-        {
-            lstTareas.Items.Clear(); // Limpiar la lista
-            listaIDs.Clear(); // Limpiar la lista de IDs
-
-            // Llamar al método ConsultarTareasPendientes del CRUD
-            MySqlDataReader leer = crud.ConsultarTareasPendientes();
-
-            // Verificar que el lector no sea nulo
-            if (leer != null)
-            {
-                // Leer cada tarea de la base de datos
-                while (leer.Read())
-                {
-                    int id = leer.GetInt32(0); // Obtener el ID de la tarea
-                    string nombre = leer.GetString(1); // Obtener el nombre de la tarea
-                    string descripcion = leer.GetString(2); // Obtener la descripción de la tarea
-
-                    listaIDs.Add(id); // Guardar el ID internamente
-                    lstTareas.Items.Add("PENDIENTE - " + nombre + " - " + descripcion); // Agregar la tarea al ListBox
-                }
-                leer.Close(); // Cerrar el lector después de usarlo
-            }
-
-            lstTareas.ClearSelected(); // Limpiar la selección del ListBox
-        }
-
-
-        // Consulta 3: Mostrar todas las tareas
+        // Consulta 1: Mostrar todas las tareas
         private void btnMostrarTodas_Click(object sender, EventArgs e)
         {
             MostrarTodasLasTareas(); // Llamar al método para mostrar todas las tareas
@@ -225,6 +173,66 @@ namespace ToDoList
                 leer.Close(); // Cerrar el lector después de usarlo
             }
         }
+
+
+        // Consulta 2: Mostrar tareas completas
+        private void btnMostrarCompletas_Click(object sender, EventArgs e)
+        {
+            lstTareas.Items.Clear(); // Limpiar la lista
+            listaIDs.Clear(); // Limpiar la lista de IDs
+
+            // Llamar al método ConsultarTareasCompletas del CRUD
+            MySqlDataReader leer = crud.ConsultarTareasCompletas();
+
+            if (leer != null) // Verificar que el lector no sea nulo
+            {
+                // Leer cada tarea de la base de datos, para cada fila en el resultado de la consulta,
+                while (leer.Read())
+                {
+                    int id = leer.GetInt32(0); // Obtener el ID de la tarea
+                    string nombre = leer.GetString(1); // Obtener el nombre de la tarea
+                    string descripcion = leer.GetString(2); // Obtener la descripción de la tarea
+
+                    listaIDs.Add(id); // Guardar el ID internamente para referencia futura
+                    lstTareas.Items.Add("HECHA - " + nombre + " - " + descripcion); // Agregar la tarea al ListBox
+                }
+                leer.Close(); // Cerrar el lector después de usarlo
+            }
+
+            lstTareas.ClearSelected(); // Limpiar la selección del ListBox
+        }
+
+
+        // Consulta 3: Mostrar tareas pendientes
+        private void btnMostrarPendientes_Click(object sender, EventArgs e)
+        {
+            lstTareas.Items.Clear(); // Limpiar la lista
+            listaIDs.Clear(); // Limpiar la lista de IDs
+
+            // Llamar al método ConsultarTareasPendientes del CRUD
+            MySqlDataReader leer = crud.ConsultarTareasPendientes();
+
+            // Verificar que el lector no sea nulo
+            if (leer != null)
+            {
+                // Leer cada tarea de la base de datos
+                while (leer.Read())
+                {
+                    int id = leer.GetInt32(0); // Obtener el ID de la tarea
+                    string nombre = leer.GetString(1); // Obtener el nombre de la tarea
+                    string descripcion = leer.GetString(2); // Obtener la descripción de la tarea
+
+                    listaIDs.Add(id); // Guardar el ID internamente
+                    lstTareas.Items.Add("PENDIENTE - " + nombre + " - " + descripcion); // Agregar la tarea al ListBox
+                }
+                leer.Close(); // Cerrar el lector después de usarlo
+            }
+
+            lstTareas.ClearSelected(); // Limpiar la selección del ListBox
+        }
+
+
+
 
 
         // Evento cuando se selecciona una tarea de la lista
