@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // conjunto de atributos. Cambie estos valores de atributo para modificar la información
 // asociada con un ensamblado.
 [assembly: AssemblyTitle("ToDoList")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Aplicación web para la gestión de tareas (To-Do List)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ToDoList")]

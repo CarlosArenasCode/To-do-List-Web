@@ -1,41 +1,42 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Configuration;
 using MySql.Data.MySqlClient;
 
 namespace ToDoList
 {
-    // Clase para manejar la conexi髇 a MySQL
+    /// <summary>
+    /// Clase para manejar la conexi贸n a la base de datos MySQL.
+    /// </summary>
     internal class Conexion
     {
-        // M閠odo que retorna la conexi髇 a la base de datos
+        /// <summary>
+        /// Obtiene una nueva conexi贸n a la base de datos MySQL.
+        /// </summary>
+        /// <returns>Objeto MySqlConnection listo para usarse.</returns>
+        /// <exception cref="Exception">Lanza una excepci贸n si ocurre un error al obtener la conexi贸n.</exception>
         public static MySqlConnection conexion()
         {
-            // Datos de conexi髇
-            string servidor = "localhost";
-            string bd = "todolist";
-            string usuario = "root";
-            string password = "1234"; 
-
-            // Se crea la cadena de conexi髇 con los datos anteriormente guardados
-            string cadenaConexion = "Database=" + bd + ";Data Source=" + servidor + ";User Id=" + usuario + ";Password=" + password + "";
-
             // Hacemos un manejo de errores con try-catch
             try 
             {
-                // Crear el objeto de conexi髇 con la cadena de conexi髇
+                // Leer la cadena de conexi贸n desde Web.config
+                string cadenaConexion = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+
+                // Crear el objeto de conexi贸n con la cadena de conexi贸n
                 MySqlConnection conexionBD = new MySqlConnection(cadenaConexion); 
 
-                // Retornar la conexi髇
+                // Retornar la conexi贸n
                 return conexionBD;
             }
             catch (MySqlException ex)
             {
                 // En caso de que no se pueda conectar a MySQL, se muestra el mensaje de error
-                Console.WriteLine("Error: " + ex.Message);
-                return null;
+                throw new Exception("Error de conexi贸n a MySQL: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                // Cualquier otro error
+                throw new Exception("Error al obtener la conexi贸n: " + ex.Message);
             }
         }
     }

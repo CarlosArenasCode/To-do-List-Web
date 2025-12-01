@@ -1,103 +1,169 @@
-# To-Do List - Sistema de Gesti�n de Tareas
+# To-Do List - Aplicación Web ASP.NET
 
-## Descripci�n
-Aplicaci�n de escritorio desarrollada en C# con Windows Forms que permite gestionar una lista de tareas con operaciones CRUD completas (Crear, Leer, Actualizar, Eliminar) conectada a una base de datos MySQL.
+✅ **Proyecto migrado exitosamente de WindowsForms a ASP.NET Web Forms**
 
-## Caracter�sticas
-- ? **Alta de Tareas**: Agregar nuevas tareas con nombre, descripci�n y estado
-- ? **Baja de Tareas**: Eliminar tareas existentes
-- ? **Modificaci�n de Tareas**: Actualizar informaci�n de tareas
-- ? **Consultas**:
-  - Ver todas las tareas
-  - Filtrar tareas completadas
-  - Filtrar tareas pendientes
+## 📋 Descripción
 
-## Tecnolog�as Utilizadas
-- **Lenguaje**: C# 7.3
-- **Framework**: .NET Framework 4.7.2
-- **Interfaz**: Windows Forms
-- **Base de Datos**: MySQL
-- **Conector**: MySql.Data
+Aplicación web para gestión de tareas (To-Do List) desarrollada en ASP.NET Web Forms con .NET Framework 4.7.2 y MySQL.
 
-## Estructura del Proyecto
+### Características
+
+- ✨ **Operaciones CRUD completas**: Agregar, Modificar, Eliminar tareas
+- 🔍 **Filtros de consulta**: Ver todas las tareas, solo completadas, o solo pendientes
+- 🎨 **Diseño moderno**: Interfaz responsive con Bootstrap 5
+- 🗄️ **Base de datos MySQL**: Persistencia de datos en MySQL
+
+## 🚀 Cómo ejecutar el proyecto
+
+### Requisitos previos
+
+1. **Visual Studio 2022** (Community, Professional o Enterprise)
+2. **MySQL Server** instalado y corriendo
+3. **Base de datos configurada** (ver sección de configuración de BD)
+
+### Paso 1: Configurar Base de Datos
+
+Ejecuta el script SQL incluido para crear la base de datos y la tabla:
+
+```bash
+mysql -u root -p < database_setup.sql
+```
+
+O abre `database_setup.sql` en MySQL Workbench y ejecútalo.
+
+### Paso 2: Configurar conexión (opcional)
+
+Si tus credenciales de MySQL son diferentes, edita `Web.config`:
+
+```xml
+<connectionStrings>
+  <add name="MySqlConnection" 
+       connectionString="Server=localhost;Database=todolist;User Id=root;Password=TU_PASSWORD;" 
+       providerName="MySql.Data.MySqlClient"/>
+</connectionStrings>
+```
+
+### Paso 3: Abrir en Visual Studio 2022
+
+1. Abre Visual Studio 2022
+2. Selecciona **Archivo** → **Abrir** → **Proyecto/Solución**
+3. Navega a la carpeta del proyecto y abre `ToDoList.sln`
+4. Espera a que Visual Studio restaure los paquetes NuGet
+
+### Paso 4: Compilar y Ejecutar
+
+#### Opción A: Con IIS Express (Recomendado)
+
+1. En Visual Studio, presiona **F5** o haz clic en el botón **▶ IIS Express**
+2. La aplicación se abrirá automáticamente en tu navegador predeterminado
+
+#### Opción B: Compilación manual
+
+1. En Visual Studio, ve a **Compilar** → **Recompilar solución**
+2. Si hay errores, verifica que:
+   - Todos los paquetes NuGet estén instalados
+   - MySQL está corriendo
+   - La base de datos existe
+
+## 📁 Estructura del Proyecto
+
 ```
 ToDoList/
-??? Form1.cs              # Interfaz principal y l�gica de eventos
-??? Form1.Designer.cs     # Dise�o del formulario
-??? CRUD.cs              # Clase con operaciones CRUD
-??? Conexion.cs          # Clase para manejo de conexi�n a MySQL
-??? Program.cs           # Punto de entrada de la aplicaci�n
+├── Default.aspx              # Página principal (interfaz)
+├── Default.aspx.cs           # Code-behind (lógica)
+├── Default.aspx.designer.cs  # Designer (controles)
+├── CRUD.cs                   # Operaciones de base de datos
+├── Conexion.cs               # Clase de conexión MySQL
+├── Web.config                # Configuración de la aplicación
+├── ToDoList.csproj           # Archivo de proyecto
+└── packages.config           # Dependencias NuGet
 ```
 
-## Requisitos
-- Visual Studio 2017 o superior
-- MySQL Server
-- MySQL Connector/NET
+## 🗄️ Esquema de Base de Datos
 
-## Instalaci�n
+**Tabla: `tareas`**
 
-### 1. Clonar el repositorio
-```bash
-git clone https://github.com/TU_USUARIO/ToDoList.git
-cd ToDoList
-```
+| Campo              | Tipo          | Descripción                     |
+|--------------------|---------------|---------------------------------|
+| Id                 | INT (PK)      | Identificador único             |
+| Titulo             | VARCHAR(100)  | Título de la tarea              |
+| Descripcion        | VARCHAR(500)  | Descripción detallada           |
+| FechaLimite        | DATE          | Fecha límite de la tarea        |
+| Completada         | BOOLEAN       | Estado (pendiente/completada)   |
+| FechaCreacion      | TIMESTAMP     | Fecha de creación automática    |
+| FechaModificacion  | TIMESTAMP     | Fecha de última modificación    |
 
-### 2. Configurar la Base de Datos
-Ejecuta el siguiente script SQL en MySQL:
+## 🎯 Funcionalidades
 
-```sql
-CREATE DATABASE todolist;
-USE todolist;
+### 1. Agregar Tarea
+- Llena el formulario con título, descripción, fecha límite y estado
+- Haz clic en "Agregar Tarea"
+- La tarea aparecerá en la lista automáticamente
 
-CREATE TABLE tareas (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    descripcion TEXT,
-    completada BOOLEAN DEFAULT FALSE
-);
-```
+### 2. Modificar Tarea
+- Haz clic en "Seleccionar" en la tabla
+- Los datos se cargarán en el formulario
+- Modifica los campos que desees
+- Haz clic en "Modificar Tarea"
 
-### 3. Configurar la Conexi�n
-Edita el archivo `Conexion.cs` con tus credenciales de MySQL:
-```csharp
-string servidor = "localhost";
-string bd = "todolist";
-string usuario = "root";
-string password = "TU_PASSWORD";
-```
+### 3. Eliminar Tarea
+- Haz clic en "Eliminar" en la fila de la tarea que deseas eliminar
+- Confirma la eliminación
 
-### 4. Restaurar paquetes NuGet
-En Visual Studio:
-- Clic derecho en el proyecto ? "Restore NuGet Packages"
+### 4. Filtrar Tareas
+- **Mostrar Todas**: Muestra todas las tareas sin filtro
+- **Tareas Completadas**: Solo muestra tareas completadas
+- **Tareas Pendientes**: Solo muestra tareas pendientes
 
-### 5. Compilar y Ejecutar
-- Presiona F5 o clic en "Iniciar"
+## 🔧 Tecnologías Utilizadas
 
-## Uso
-1. La aplicaci�n muestra todas las tareas al iniciar
-2. Para **agregar** una tarea: completa los campos y presiona "Agregar"
-3. Para **eliminar** una tarea: selecci�nala de la lista y presiona "Eliminar"
-4. Para **modificar** una tarea: selecci�nala, edita los campos y presiona "Modificar"
-5. Usa los botones de filtro para ver tareas completas, pendientes o todas
+- **Backend**: ASP.NET Web Forms (.NET Framework 4.7.2)
+- **Lenguaje**: C#
+- **Base de datos**: MySQL 9.5
+- **Frontend**: HTML5, CSS3, Bootstrap 5
+- **Iconos**: Bootstrap Icons
+- **ORM**: ADO.NET con MySql.Data
 
-## Base de Datos
-La tabla `tareas` contiene:
-- **id**: Identificador �nico (AUTO_INCREMENT)
-- **nombre**: Nombre de la tarea (VARCHAR 100)
-- **descripcion**: Descripci�n detallada (TEXT)
-- **completada**: Estado de la tarea (BOOLEAN: 0=Pendiente, 1=Completada)
+## ⚠️ Notas Importantes
 
-## Autor
-**Carlos Saul Arenas Maciel**  
-Fecha: 21/09/2025
+> **WindowsForms**: Este proyecto **NO contiene ningún rastro** de WindowsForms. Ha sido completamente convertido a ASP.NET Web Application.
 
-## Licencia
-Este proyecto es de c�digo abierto y est� disponible bajo la licencia MIT.
+> **Visual Studio 2022**: El proyecto está configurado para compilarse en Visual Studio 2022 con .NET Framework 4.7.2.
 
-## Capturas de Pantalla
-_Agrega aqu� capturas de pantalla de tu aplicaci�n_
+> **MySQL**: Asegúrate de que MySQL esté corriendo en `localhost:3306` con las credenciales configuradas en `Web.config`.
 
-## Notas
-- Este proyecto fue desarrollado como parte de un trabajo acad�mico
-- Implementa las 4 operaciones CRUD completas
-- Incluye validaci�n de datos y manejo de errores
+## 📝 Cambios Realizados en la Migración
+
+### Archivos Eliminados (WindowsForms)
+- ❌ Form1.cs
+- ❌ Form1.Designer.cs
+- ❌ Form1.resx
+- ❌ Program.cs
+- ❌ App.config
+
+### Archivos Nuevos (Web Application)
+- ✅ Default.aspx
+- ✅ Default.aspx.cs
+- ✅ Default.aspx.designer.cs
+- ✅ Web.config
+
+### Archivos Modificados
+- 🔄 Conexion.cs (ahora lee desde Web.config)
+- 🔄 ToDoList.csproj (convertido a proyecto web)
+- ✅ CRUD.cs (mantenido sin cambios, compatible con web)
+
+## 👤 Autor
+
+**Carlos Saul Arenas Maciel**
+
+## 📅 Fecha
+
+Noviembre 2025
+
+---
+
+¿Necesitas ayuda? Revisa que:
+1. ✅ MySQL esté corriendo
+2. ✅ La base de datos `todolist` exista
+3. ✅ Las credenciales en `Web.config` sean correctas
+4. ✅ Los paquetes NuGet estén restaurados
